@@ -522,7 +522,10 @@ size_t _mi_prim_numa_node_count(void) {
   for(node = 0; node < 256; node++) {
     // enumerate node entries -- todo: it there a more efficient way to do this? (but ensure there is no allocation)
     _mi_snprintf(buf, 127, "/sys/devices/system/node/node%u", node + 1);
-    if (mi_prim_access(buf,R_OK) != 0) break;
+    if (mi_prim_access(buf,R_OK) != 0) {
+        if (errno == ENOENT) errno = 0;
+        break;
+    }
   }
   return (node+1);
 }
