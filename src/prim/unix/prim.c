@@ -153,12 +153,11 @@ void _mi_prim_mem_init( mi_os_mem_config_t* config )
   if (!mi_option_is_enabled(mi_option_allow_large_os_pages)) // disable THP also if large OS pages are not allowed in the options
   #endif
   {
-    int val = 0;
-    if (prctl(PR_GET_THP_DISABLE, &val, 0, 0, 0) != 0) {
+    if (prctl(PR_GET_THP_DISABLE, 0, 0, 0, 0) == 0) {
       // Most likely since distros often come with always/madvise settings.
-      val = 1;
+
       // Disabling only for mimalloc process rather than touching system wide settings
-      (void)prctl(PR_SET_THP_DISABLE, &val, 0, 0, 0);
+      (void)prctl(PR_SET_THP_DISABLE, 1, 0, 0, 0);
     }
   }
   #endif
